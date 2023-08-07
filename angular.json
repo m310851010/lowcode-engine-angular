@@ -75,6 +75,7 @@
               "browserTarget": "lowcode-engine-angular:build:production"
             },
             "development": {
+              "port": 4600,
               "browserTarget": "lowcode-engine-angular:build:development"
             }
           },
@@ -102,6 +103,37 @@
               "src/styles.less"
             ],
             "scripts": []
+          }
+        }
+      }
+    },
+    "ngx-renderer": {
+      "projectType": "library",
+      "root": "projects/ngx-renderer",
+      "sourceRoot": "projects/ngx-renderer/src",
+      "prefix": "la",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-renderer/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-renderer/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-renderer/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-renderer/src/test.ts",
+            "tsConfig": "projects/ngx-renderer/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-renderer/karma.conf.js"
           }
         }
       }
