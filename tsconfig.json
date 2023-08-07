@@ -11,13 +11,34 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+    "jsx": "preserve",
+    "noImplicitThis": true,
+    "preserveValueImports": true,
+    "jsxImportSource": "react",
+
     "paths": {
+      "lowcode-utils": [
+        "dist/lowcode-utils/lowcode-utils",
+        "dist/lowcode-utils",
+        "projects/lowcode-utils/src/public-api"
+      ],
       "ngx-renderer": [
         "dist/ngx-renderer/ngx-renderer",
-        "dist/ngx-renderer"
+        "dist/ngx-renderer",
+        "projects/ngx-renderer/src/public-api"
+      ],
+      "ngx-simulator-renderer": [
+        "dist/ngx-simulator-renderer/ngx-simulator-renderer",
+        "dist/ngx-simulator-renderer",
+        "projects/ngx-simulator-renderer/src/public-api"
       ]
     },
-    "declaration": false,
+    "declaration": true,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
