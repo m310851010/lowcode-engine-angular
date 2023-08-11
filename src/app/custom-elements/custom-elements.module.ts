@@ -6,11 +6,11 @@ import {
   ELEMENT_MODULE_LOAD_CALLBACKS_AS_ROUTES,
   ELEMENT_MODULE_LOAD_CALLBACKS_TOKEN
 } from './element-registry';
-import { LazyWebComponent } from './lazy-web.component';
+import { WebComponentLoader } from './web-component-loader.component';
 
 @NgModule({
-  declarations: [ LazyWebComponent ],
-  exports: [ LazyWebComponent ],
+  declarations: [ WebComponentLoader ],
+  exports: [ WebComponentLoader ],
   providers: [
     ElementsLoader,
     { provide: ELEMENT_MODULE_LOAD_CALLBACKS_TOKEN, useValue: ELEMENT_MODULE_LOAD_CALLBACKS },

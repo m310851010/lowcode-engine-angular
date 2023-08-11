@@ -9,7 +9,8 @@ export class ElementsLoader {
   /** Map of unregistered custom elements and their respective module paths to load. */
   private elementsToLoad: Map<string, LoadChildrenCallback>;
   /** Map of custom elements that are in the process of being loaded and registered. */
-  private elementsLoading = new Map<string, Promise<CustomElementConstructor>>();
+  private elementsLoading = new Map<string, Promise<ComponentMeta>>();
+  private elementsLoaded = new Map<string, ComponentMeta | null>();
 
   constructor(
     private moduleRef: NgModuleRef<any>,
@@ -40,43 +41,42 @@ export class ElementsLoader {
    * @param selector
    * @param callback 回调函数
    */
-  loadCustomElement(
-    selector: string,
-    callback?: (detail: { moduleRef: NgModuleRef<any>; injector: Injector; componentType: Type<any> }) => void
-  ): Promise<CustomElementConstructor> {
+  loadCustomElement(selector: string, callback?: (meta: ComponentMeta) => void): Promise<ComponentMeta> {
+    if (this.elementsLoaded.has(selector)) {
+      return Promise.resolve(this.elementsLoaded.get(selector)!);
+    }
+
     if (this.elementsLoading.has(selector)) {
-      // The custom element is in the process of being loaded and registered.
-      return this.elementsLoading.get(selector) as Promise<CustomElementConstructor>;
+      return this.elementsLoading.get(selector)!;
     }
 
     if (this.elementsToLoad.has(selector)) {
-      // Load and register the custom element (for the first time).
+      // 第一次加载并注册
       const modulePathLoader = this.elementsToLoad.get(selector) as LoadChildrenCallback;
       const loadedAndRegistered = (modulePathLoader() as Promise<Type<WithWebComponent>>)
         .then(elementModule => {
           const elementModuleRef = createNgModuleRef(elementModule, this.moduleRef.injector);
           const injector = elementModuleRef.injector;
           const CustomElementComponent = elementModuleRef.instance.webComponent;
+          const meta: ComponentMeta = { moduleRef: elementModuleRef, injector, componentType: CustomElementComponent };
           if (callback) {
-            callback({ moduleRef: elementModuleRef, injector, componentType: CustomElementComponent });
+            callback(meta);
           }
-          const CustomElement = createCustomElement(CustomElementComponent, { injector });
 
-          customElements.define(selector, CustomElement);
-          return customElements.whenDefined(selector);
+          // const CustomElement = createCustomElement(CustomElementComponent, { injector });
+          // customElements.define(selector, CustomElement);
+          // return customElements.whenDefined(selector);
+          return meta;
         })
         .then(v => {
-          // The custom element has been successfully loaded and registered.
-          // Remove from `elementsLoading` and `elementsToLoad`.
           this.elementsLoading.delete(selector);
           this.elementsToLoad.delete(selector);
+          this.elementsLoaded.set(selector, v);
           return v;
         })
         .catch(err => {
-          // The custom element has failed to load and register.
-          // Remove from `elementsLoading`.
-          // (Do not remove from `elementsToLoad` in case it was a temporary error.)
           this.elementsLoading.delete(selector);
+          this.elementsLoaded.set(selector, null);
           return Promise.reject(err);
         });
 
@@ -84,7 +84,13 @@ export class ElementsLoader {
       return loadedAndRegistered;
     }
 
-    // The custom element has already been loaded and registered.
-    return Promise.resolve(customElements.get(selector)!);
+    throw new Error('not found selector:' + selector);
+    // return Promise.resolve(customElements.get(selector)!);
   }
+}
+
+export interface ComponentMeta {
+  moduleRef: NgModuleRef<WithWebComponent>;
+  injector: Injector;
+  componentType: Type<any>;
 }

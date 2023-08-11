@@ -3,7 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { createCustomElement } from '@angular/elements';
 import { CustomElementsModule } from './custom-elements/custom-elements.module';
-import { LazyWebComponent } from './custom-elements/lazy-web.component';
+import { WebComponentLoader } from './custom-elements/web-component-loader.component';
+import { ComponentNgElementStrategyFactory } from './custom-elements/component-factory-strategy';
 
 @NgModule({
   declarations: [],
@@ -15,7 +16,11 @@ import { LazyWebComponent } from './custom-elements/lazy-web.component';
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector) {}
   ngDoBootstrap(appRef: ApplicationRef): void {
-    const el = createCustomElement(LazyWebComponent, { injector: this.injector });
+    const el = createCustomElement(WebComponentLoader, {
+      injector: this.injector,
+      strategyFactory: new ComponentNgElementStrategyFactory(WebComponentLoader, this.injector)
+    });
+    console.log(el);
     customElements.define('wc-loader', el);
   }
 }

@@ -9,7 +9,7 @@
 </head>
 <body>
   <la-root></la-root>
-  <wc-loader id="test" selector="lc-editor" onload="onLoad(event)" ontest="onTest(event)"></wc-loader>
+  <wc-loader id="test" selector="lc-editor" onload="onLoad(event)" (ontest)="onTest($event)"></wc-loader>
   <script>
     const test = document.getElementById('test');
     // test.onload = onLoad;
@@ -17,6 +17,10 @@
      console.log(evt)
    }
 
+
+    setTimeout(() => {
+      test.setAttribute('value', 'ssssss');
+    }, 2000);
     function onTest(evt) {
       console.log('onTest===', evt)
     }

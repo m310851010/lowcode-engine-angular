@@ -4,8 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start:editor": "build-scripts --rootDir projects/lowcode-editor/ start  --disable-reload --port 5555",
-    "build": "ng build",
+    "build": "ng build --output-hashing=none",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

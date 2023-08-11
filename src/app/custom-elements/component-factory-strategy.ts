@@ -36,7 +36,10 @@ const DESTROY_DELAY = 10;
 export class ComponentNgElementStrategyFactory implements NgElementStrategyFactory {
   componentFactory: ComponentFactory<any>;
 
-  constructor(component: Type<any>, injector: Injector) {
+  constructor(
+    public component: Type<any>,
+    public injector: Injector
+  ) {
     this.componentFactory = injector.get(ComponentFactoryResolver).resolveComponentFactory(component);
   }
 
@@ -210,6 +213,15 @@ export class ComponentNgElementStrategy implements NgElementStrategy {
     this.viewChangeDetectorRef = this.componentRef.injector.get(ChangeDetectorRef);
 
     this.implementsOnChanges = isFunction((this.componentRef.instance as OnChanges).ngOnChanges);
+    if (this.componentRef.instance.registerOnAddInputs) {
+      const addInputs = (inputs: ComponentFactory<any>['inputs']) => {
+        // @ts-ignore
+        inputs.forEach(({ propName, transform }) => {
+          this.setInputValue(propName, this.initialInputValues.get(propName), transform);
+        });
+      };
+      this.componentRef.instance.registerOnAddInputs(addInputs);
+    }
 
     this.initializeInputs();
     this.initializeOutputs(this.componentRef);
@@ -327,3 +339,5 @@ export class ComponentNgElementStrategy implements NgElementStrategy {
     return this.elementZone && Zone.current !== this.elementZone ? this.ngZone.run(fn) : fn();
   }
 }
+
+export type AddInputs = (inputs: ComponentFactory<any>['inputs']) => void;
