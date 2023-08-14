@@ -23,8 +23,9 @@ import {
 import { merge, Observable, ReplaySubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
-import { NgElementStrategy, NgElementStrategyEvent, NgElementStrategyFactory } from '@angular/elements';
+// import { NgElementStrategy, NgElementStrategyEvent, NgElementStrategyFactory } from '@angular/elements';
 import { extractProjectableNodes, isFunction, scheduler, strictEquals } from './utils';
+import { NgElementStrategy, NgElementStrategyEvent, NgElementStrategyFactory } from './element-strategy';
 
 /** Time in milliseconds to wait before destroying the component ref when disconnected. */
 const DESTROY_DELAY = 10;
@@ -215,10 +216,10 @@ export class ComponentNgElementStrategy implements NgElementStrategy {
     this.implementsOnChanges = isFunction((this.componentRef.instance as OnChanges).ngOnChanges);
     if (this.componentRef.instance.registerOnAddInputs) {
       const addInputs = (inputs: ComponentFactory<any>['inputs']) => {
-        // @ts-ignore
-        inputs.forEach(({ propName, transform }) => {
-          this.setInputValue(propName, this.initialInputValues.get(propName), transform);
-        });
+        // // @ts-ignore
+        // inputs.forEach(({ propName, transform }) => {
+        //   this.setInputValue(propName, this.initialInputValues.get(propName), transform);
+        // });
       };
       this.componentRef.instance.registerOnAddInputs(addInputs);
     }
@@ -340,4 +341,4 @@ export class ComponentNgElementStrategy implements NgElementStrategy {
   }
 }
 
-export type AddInputs = (inputs: ComponentFactory<any>['inputs']) => void;
+export type RegisterInputs = (inputs: ComponentFactory<any>['inputs']) => void;

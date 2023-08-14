@@ -16,7 +16,7 @@ import {
 import { ElementsLoader } from './elements-loader';
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { isFunction, strictEquals } from './utils';
-import { AddInputs } from './component-factory-strategy';
+import { RegisterInputs } from './component-factory-strategy';
 
 /**
  * web component加载器
@@ -36,8 +36,9 @@ export class WebComponentLoader implements OnInit, OnDestroy, OnChanges {
   readonly element: HTMLElement;
   readonly that: WebComponentLoader;
   @Input() selector!: string;
+  @Input() testName!: string;
   @Output() readonly onload = new ReplaySubject<any>();
-  private addInputFn!: AddInputs;
+  private registerInputs!: RegisterInputs;
 
   constructor(
     public elementRef: ElementRef<HTMLElement>,
@@ -59,7 +60,7 @@ export class WebComponentLoader implements OnInit, OnDestroy, OnChanges {
       const componentFactory = meta.injector.get(ComponentFactoryResolver).resolveComponentFactory(meta.componentType);
 
       const unchangedInputs = new Set<string>(componentFactory.inputs.map(({ propName }) => propName));
-      this.addInputFn(componentFactory.inputs);
+      this.registerInputs(componentFactory.inputs);
 
       const ngZone = meta.injector.get<NgZone>(NgZone);
       const elementZone = typeof Zone === 'undefined' ? null : ngZone.run(() => Zone.current);
@@ -75,8 +76,8 @@ export class WebComponentLoader implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  registerOnAddInputs(fn: AddInputs) {
-    this.addInputFn = fn;
+  registerOnAddInputs(fn: RegisterInputs) {
+    this.registerInputs = fn;
   }
 
   ngOnDestroy(): void {

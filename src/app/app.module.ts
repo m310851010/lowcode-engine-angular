@@ -1,10 +1,10 @@
 import { APP_ID, ApplicationRef, CUSTOM_ELEMENTS_SCHEMA, DoBootstrap, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { createCustomElement } from '@angular/elements';
 import { CustomElementsModule } from './custom-elements/custom-elements.module';
 import { WebComponentLoader } from './custom-elements/web-component-loader.component';
 import { ComponentNgElementStrategyFactory } from './custom-elements/component-factory-strategy';
+import { createCustomElement } from './custom-elements/create-custom-element';
 
 @NgModule({
   declarations: [],
@@ -15,6 +15,7 @@ import { ComponentNgElementStrategyFactory } from './custom-elements/component-f
 })
 export class AppModule implements DoBootstrap {
   constructor(private injector: Injector) {}
+
   ngDoBootstrap(appRef: ApplicationRef): void {
     const el = createCustomElement(WebComponentLoader, {
       injector: this.injector,

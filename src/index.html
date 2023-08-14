@@ -9,6 +9,8 @@
 </head>
 <body>
   <la-root></la-root>
+  <button onclick="addProp()">添加属性</button>
+  <button onclick="addProp2()">添加属性2</button>
   <wc-loader id="test" selector="lc-editor" onload="onLoad(event)" (ontest)="onTest($event)"></wc-loader>
   <script>
     const test = document.getElementById('test');
@@ -17,10 +19,16 @@
      console.log(evt)
    }
 
+    function addProp() {
+      test.setAttribute('test-name', 'testName0000');
+    }
 
-    setTimeout(() => {
-      test.setAttribute('value', 'ssssss');
-    }, 2000);
+
+function addProp2() {
+  test.setAttribute('test-name', '000');
+    }
+
+
     function onTest(evt) {
       console.log('onTest===', evt)
     }

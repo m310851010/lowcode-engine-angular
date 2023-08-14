@@ -244,5 +244,25 @@ export function createCustomElement<P>(component: Type<any>, config: NgElementCo
     });
   });
 
+  {
+    const propName = 'testName';
+    const map = getDefaultAttributeToPropertyInputs([{ propName, templateName: propName }]);
+    for (const key in map) {
+      attributeToPropertyInputs[key] = map[key];
+    }
+
+    NgElementImpl.observedAttributes.push(propName);
+    Object.defineProperty(NgElementImpl.prototype, propName, {
+      get(): any {
+        return this.ngElementStrategy.getInputValue(propName);
+      },
+      set(newValue: any): void {
+        this.ngElementStrategy.setInputValue(propName, newValue);
+      },
+      configurable: true,
+      enumerable: true
+    });
+  }
+
   return NgElementImpl as any as NgElementConstructor<P>;
 }
